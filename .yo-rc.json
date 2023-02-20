@@ -1,0 +1,21 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "16.16.0",
+    "sdksVersions": {
+      "@microsoft/microsoft-graph-client": "3.0.2",
+      "@microsoft/teams-js": "2.4.1"
+    },
+    "version": "1.16.1",
+    "libraryName": "survey-react",
+    "libraryId": "79643d93-5503-47d5-8e51-873a1e766f1b",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "SurveyReact",
+    "solutionShortDescription": "SurveyReact description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}
