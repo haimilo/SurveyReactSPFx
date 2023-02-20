@@ -1,120 +1,88 @@
-import * as React from 'react';
-import * as ReactDom from 'react-dom';
-import { Version } from '@microsoft/sp-core-library';
+import * as React from "react";
+import * as ReactDom from "react-dom";
+import { Version } from "@microsoft/sp-core-library";
 import {
-  IPropertyPaneConfiguration,
-  PropertyPaneTextField
-} from '@microsoft/sp-property-pane';
-import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
-import { IReadonlyTheme } from '@microsoft/sp-component-base';
+    IPropertyPaneConfiguration,
+    PropertyPaneTextField,
+} from "@microsoft/sp-property-pane";
+import { BaseClientSideWebPart } from "@microsoft/sp-webpart-base";
 
-import * as strings from 'SurveyReactWebPartStrings';
-import SurveyReact from './components/SurveyReact';
-import { ISurveyReactProps } from './components/ISurveyReactProps';
+import * as strings from "SurveyReactWebPartStrings";
+import SurveyReact from "./components/SurveyReact";
+import { ISurveyReactProps } from "./components/ISurveyReactProps";
 
 export interface ISurveyReactWebPartProps {
-  description: string;
+    description: string;
 }
 
 export default class SurveyReactWebPart extends BaseClientSideWebPart<ISurveyReactWebPartProps> {
+    public render(): void {
+        const element: React.ReactElement<ISurveyReactProps> =
+            React.createElement(SurveyReact, {
+                description: this.properties.description,
+                context: this.context,
+            });
 
-  private _isDarkTheme: boolean = false;
-  private _environmentMessage: string = '';
-
-  public render(): void {
-    const element: React.ReactElement<ISurveyReactProps> = React.createElement(
-      SurveyReact,
-      {
-        description: this.properties.description,
-        isDarkTheme: this._isDarkTheme,
-        environmentMessage: this._environmentMessage,
-        hasTeamsContext: !!this.context.sdks.microsoftTeams,
-        userDisplayName: this.context.pageContext.user.displayName
-      }
-    );
-
-    ReactDom.render(element, this.domElement);
-  }
-
-  protected onInit(): Promise<void> {
-    return this._getEnvironmentMessage().then(message => {
-      this._environmentMessage = message;
-    });
-  }
-
-
-
-  private _getEnvironmentMessage(): Promise<string> {
-    if (!!this.context.sdks.microsoftTeams) { // running in Teams, office.com or Outlook
-      return this.context.sdks.microsoftTeams.teamsJs.app.getContext()
-        .then(context => {
-          let environmentMessage: string = '';
-          switch (context.app.host.name) {
-            case 'Office': // running in Office
-              environmentMessage = this.context.isServedFromLocalhost ? strings.AppLocalEnvironmentOffice : strings.AppOfficeEnvironment;
-              break;
-            case 'Outlook': // running in Outlook
-              environmentMessage = this.context.isServedFromLocalhost ? strings.AppLocalEnvironmentOutlook : strings.AppOutlookEnvironment;
-              break;
-            case 'Teams': // running in Teams
-              environmentMessage = this.context.isServedFromLocalhost ? strings.AppLocalEnvironmentTeams : strings.AppTeamsTabEnvironment;
-              break;
-            default:
-              throw new Error('Unknown host');
-          }
-
-          return environmentMessage;
-        });
+        ReactDom.render(element, this.domElement);
     }
 
-    return Promise.resolve(this.context.isServedFromLocalhost ? strings.AppLocalEnvironmentSharePoint : strings.AppSharePointEnvironment);
-  }
-
-  protected onThemeChanged(currentTheme: IReadonlyTheme | undefined): void {
-    if (!currentTheme) {
-      return;
+    protected onDispose(): void {
+        ReactDom.unmountComponentAtNode(this.domElement);
     }
 
-    this._isDarkTheme = !!currentTheme.isInverted;
-    const {
-      semanticColors
-    } = currentTheme;
-
-    if (semanticColors) {
-      this.domElement.style.setProperty('--bodyText', semanticColors.bodyText || null);
-      this.domElement.style.setProperty('--link', semanticColors.link || null);
-      this.domElement.style.setProperty('--linkHovered', semanticColors.linkHovered || null);
+    protected get dataVersion(): Version {
+        return Version.parse("1.0");
     }
 
-  }
-
-  protected onDispose(): void {
-    ReactDom.unmountComponentAtNode(this.domElement);
-  }
-
-  protected get dataVersion(): Version {
-    return Version.parse('1.0');
-  }
-
-  protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
-    return {
-      pages: [
-        {
-          header: {
-            description: strings.PropertyPaneDescription
-          },
-          groups: [
-            {
-              groupName: strings.BasicGroupName,
-              groupFields: [
-                PropertyPaneTextField('description', {
-                  label: strings.DescriptionFieldLabel
-                })
-              ]
-            }
-          ]
-        }
-      ]
-    };
-  }
+    protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
+        return {
+            pages: [
+                {
+                    header: {
+                        description: "Question 1",
+                    },
+                    groups: [
+                        {
+                            groupName: strings.BasicGroupName,
+                            groupFields: [
+                                PropertyPaneTextField("description", {
+                                    label: strings.DescriptionFieldLabel,
+                                }),
+                            ],
+                        },
+                    ],
+                },
+                {
+                    header: {
+                        description: "Question 2",
+                    },
+                    groups: [
+                        {
+                            groupName: strings.BasicGroupName,
+                            groupFields: [
+                                PropertyPaneTextField("description", {
+                                    label: strings.DescriptionFieldLabel,
+                                }),
+                            ],
+                        },
+                    ],
+                },
+                {
+                    header: {
+                        description: "Question 3",
+                    },
+                    groups: [
+                        {
+                            groupName: strings.BasicGroupName,
+                            groupFields: [
+                                PropertyPaneTextField("description", {
+                                    label: strings.DescriptionFieldLabel,
+                                }),
+                            ],
+                        },
+                    ],
+                },
+            ],
+        };
+    }
 }
